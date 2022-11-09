@@ -11,6 +11,7 @@ def _initialize_env_var(env_var, default_val):
 
 
 import hy.importer  # NOQA
+import hy.codec  # NOQA
 
 hy.importer._inject_builtins()
 # we import for side-effects.

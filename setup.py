@@ -3,9 +3,11 @@
 import os
 
 import fastentrypoints  # Monkey-patches setuptools.
+from pathlib import Path
 from get_version import __version__
 from setuptools import find_packages, setup
 from setuptools.command.install import install
+from setuptools.command.build_py import build_py
 
 os.chdir(os.path.split(os.path.abspath(__file__))[0])
 
@@ -30,6 +32,20 @@ class install(install):
                     path,
                     invalidation_mode=py_compile.PycInvalidationMode.CHECKED_HASH,
                 )
+
+
+class bundle_pth_file(build_py):
+    "Bundle hy_codec.pth file to support directly running Hy files with Python"
+
+    def run(self):
+        "https://stackoverflow.com/a/71137790/6509967"
+        super().run()
+
+        destination_in_wheel = 'hy_codec.pth'
+        location_in_source_tree = f'{PKG}/hy_codec.pth'
+
+        out_file = Path(self.build_lib) / destination_in_wheel
+        self.copy_file(location_in_source_tree, out_file, preserve_mode=0)
 
 
 # both setup_requires and install_requires
@@ -92,5 +108,6 @@ setup(
     },
     cmdclass={
         "install": install,
+        "build_py": bundle_pth_file
     },
 )

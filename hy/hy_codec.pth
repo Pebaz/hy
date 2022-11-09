@@ -1,0 +1,2 @@
+# https://docs.python.org/3.10/library/site.html
+import sys; exec('try:\n    import hy\nexcept ImportError as e:\n    print(e)\n')
